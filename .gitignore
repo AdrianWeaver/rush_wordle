@@ -1,0 +1,7 @@
+a.out
+*.swp
+*.gch
+*.o
+*.swo
+test*
+./objects*
