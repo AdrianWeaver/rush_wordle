@@ -6,7 +6,7 @@
 /*   By: aweaver <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 08:54:42 by aweaver           #+#    #+#             */
-/*   Updated: 2022/05/14 19:26:02 by aweaver          ###   ########.fr       */
+/*   Updated: 2022/05/14 19:55:43 by aweaver          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,14 +217,33 @@ void	ft_print_victory_screen(int cols)
 	std::cout << GREEN << "Well done chap(ess)! You won!" << NOCOLOUR << std::endl;
 }
 
-int	ft_print_coloured_attempt(std::vector<Word> &words, int cols)
+void	ft_print_losing_screen(std::string seek)
 {
-	int ret;
-	
-	ret = 0;
+	struct winsize window;
+	int cols;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &window);
+	cols = window.ws_col;
+
+	for (int i = 0; i < ((cols - 28) / 16); i++)
+		std::cout << "\t";
+	std::cout << "Oopsie, seems like you lost!" << NOCOLOUR << std::endl;
+	for (int i = 0; i < ((cols - 18) / 16); i++)
+		std::cout << "\t";
+	std::cout << "The word was: " << RED << seek << NOCOLOUR << std::endl << std::endl;
+}
+
+int	ft_print_coloured_attempt(std::vector<Word> &words)
+{
+	struct winsize window;
+	int cols;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &window);
+	cols = window.ws_col;
 	ft_print_menu(words, cols);
 	for (size_t j = 0; j < words.size(); j++)
 	{
+		int ret;
+
+		ret = 0;
 		for (int i = 0; i < ((cols - 5) / 16); i++)
 			std::cout << "\t";
 		for (size_t i = 0; i < 5; i++)
@@ -243,13 +262,13 @@ int	ft_print_coloured_attempt(std::vector<Word> &words, int cols)
 		if (ret == 5)
 		{
 			ft_print_victory_screen(cols);
-			return (1);
+			exit (0);
 		}
 	}
 	return (0);
 }
 
-int	ft_ask_user(std::vector<Word> &words, std::set<std::string> dico, std::string seek, int cols)
+int	ft_ask_user(std::vector<Word> &words, std::set<std::string> dico, std::string seek)
 {
 	std::string player_input;
 
@@ -262,7 +281,7 @@ int	ft_ask_user(std::vector<Word> &words, std::set<std::string> dico, std::strin
 	ft_check_correct_place(checker);
 	ft_check_wrong_place(checker);
 	words.push_back(checker);
-	return (ft_print_coloured_attempt(words, cols));
+	return (ft_print_coloured_attempt(words));
 }
 
 void	 ft_chose_random_word(std::set<std::string> dico, std::string &seek)
@@ -307,8 +326,10 @@ int	main(void)
 	ft_print_first_menu(cols);
 	while (i < 6)
 	{
-		if (ft_ask_user(words, dico, seek, cols) == 1)
-			break ;
+		if (ft_ask_user(words, dico, seek) == 1)
+			return (0);
+		i++;
 	}
+	ft_print_losing_screen(seek);
 	return (0);
 }
