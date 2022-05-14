@@ -6,7 +6,7 @@
 /*   By: aweaver <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 08:54:42 by aweaver           #+#    #+#             */
-/*   Updated: 2022/05/14 18:23:04 by aweaver          ###   ########.fr       */
+/*   Updated: 2022/05/14 18:51:35 by aweaver          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ void	ft_setify(std::ifstream &dico_file, std::set<std::string> &dico)
 		dico.insert(line);
 		line_number++;
 	}
-	if (dico_file.eof())
-		exit (0);
 	if (line_number == 0)
 	{
 		std::cout << "The file you provided as a dictionnary contains no words"
@@ -101,7 +99,13 @@ void	ft_string_toupper(std::string &player_input)
 int	ft_check_input(std::set<std::string> dico, std::string &player_input)
 {
 	player_input.clear();
-	std::cin >> player_input; std::cin.ignore();
+	std::getline(std::cin, player_input);
+	if (std::cin.eof() == 1)
+	{
+		std::cerr << "Error: Stdin closed cannot continue" << std::endl;
+		exit (0);
+	}
+	//std::cin >> player_input; std::cin.ignore();
 	ft_string_tolower(player_input);
 	//std::cout << player_input << std::endl;
 	//std::cout << "str_len:" << player_input.size() << std::endl;
@@ -271,6 +275,7 @@ int	main(void)
 		return (0);
 	}
 	ft_setify(dico_file, dico);
+	dico_file.close();
 	ft_chose_random_word(dico, seek);
 	while (i < 6)
 	{
