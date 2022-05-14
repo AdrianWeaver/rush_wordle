@@ -6,7 +6,7 @@
 /*   By: aweaver <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 08:56:42 by aweaver           #+#    #+#             */
-/*   Updated: 2022/05/14 15:53:21 by aweaver          ###   ########.fr       */
+/*   Updated: 2022/05/14 17:32:25 by aweaver          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #define RED "\33[1;31m"
 #define NOCOLOUR "\33[m"
 #define PRINT_SEEK 1
-#define DEBUG 1
+#define DEBUG 0
 
 #define WRONG_SPOT 1
 #define PERFECT_SPOT 2
@@ -30,7 +30,8 @@ class Word
 {
 	public:
 		std::string	name;
-		int letters[5];
+		int letters[5]; //counting player_input letters
+		int	reference[5]; //counting seek letters
 		Word();
 		Word(std::string name);
 };
