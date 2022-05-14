@@ -6,7 +6,7 @@ NAME = wordle
 				
 CC = c++
 
-CFLAGS = -MMD -g3
+CFLAGS = -MMD -g3 -Wall -Wextra
 
 INC = -I ./includes
 
@@ -24,7 +24,7 @@ OBJS_PATH = ./objects/
 
 SRCS = main.cpp
 
-OBJS = $(addprefix $(OBJS_PATH), $(SRCS:.c=.o))
+OBJS = $(addprefix $(OBJS_PATH), $(SRCS:.cpp=.o))
 
 DEPS = $(OBJS:.o=.d)
 
@@ -37,7 +37,7 @@ all:	$(NAME)
 $(NAME):	$(OBJS)
 			$(CC) $(CFLAGS) $(OBJS) -o $@
 
-$(OBJS_PATH)%.o:	$(SRCS_PATH)%.c
+$(OBJS_PATH)%.o:	$(SRCS_PATH)%.cpp
 			@mkdir -p $(dir $@)
 			$(CC) $(CFLAGS) -c $< -o $@ $(INC)
 
