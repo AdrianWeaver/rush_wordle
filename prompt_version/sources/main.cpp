@@ -6,7 +6,7 @@
 /*   By: aweaver <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 08:54:42 by aweaver           #+#    #+#             */
-/*   Updated: 2022/05/14 19:55:43 by aweaver          ###   ########.fr       */
+/*   Updated: 2022/05/14 20:13:43 by aweaver          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,9 +212,10 @@ void	ft_print_first_menu(int cols)
 
 void	ft_print_victory_screen(int cols)
 {
+	std::cout << std::endl;
 	for (int i = 0; i < ((cols - 29) / 16); i++)
 		std::cout << "\t";
-	std::cout << GREEN << "Well done chap(ess)! You won!" << NOCOLOUR << std::endl;
+	std::cout << GREEN << "Well done chap(ess)! You won!" << NOCOLOUR << std::endl << std::endl;
 }
 
 void	ft_print_losing_screen(std::string seek)
