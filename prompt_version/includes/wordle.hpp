@@ -6,12 +6,13 @@
 /*   By: aweaver <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 08:56:42 by aweaver           #+#    #+#             */
-/*   Updated: 2022/05/14 17:32:25 by aweaver          ###   ########.fr       */
+/*   Updated: 2022/05/14 18:05:46 by aweaver          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <set>
+#include <vector>
 #include <fstream>
 #include <algorithm>
 #include <string>
@@ -29,9 +30,10 @@
 class Word
 {
 	public:
-		std::string	name;
+		std::string	seek;
+		std::string player_input;
 		int letters[5]; //counting player_input letters
 		int	reference[5]; //counting seek letters
 		Word();
-		Word(std::string name);
+		Word(std::string name, std::string input);
 };

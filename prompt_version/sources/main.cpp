@@ -6,7 +6,7 @@
 /*   By: aweaver <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 08:54:42 by aweaver           #+#    #+#             */
-/*   Updated: 2022/05/14 17:34:33 by aweaver          ###   ########.fr       */
+/*   Updated: 2022/05/14 18:23:04 by aweaver          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@
 #include <string>
 #include "wordle.hpp"
 
-Word::Word(std::string name)
+Word::Word(std::string seek, std::string input)
 {
-	this->name = name;
+	this->seek = seek;
+	this->player_input = input;
 	for (int i = 0; i < 5; i++)
 	{
 		this->letters[i] = 0;
@@ -52,6 +53,8 @@ void	ft_setify(std::ifstream &dico_file, std::set<std::string> &dico)
 		dico.insert(line);
 		line_number++;
 	}
+	if (dico_file.eof())
+		exit (0);
 	if (line_number == 0)
 	{
 		std::cout << "The file you provided as a dictionnary contains no words"
@@ -120,7 +123,7 @@ int	ft_check_input(std::set<std::string> dico, std::string &player_input)
 	return (1);
 }
 
-void	ft_check_wrong_place(Word &checker, std::string player_input, std::string seek)
+void	ft_check_wrong_place(Word &checker)
 {
 	int i; //iterates in player_input
 	int	j; //iterates in seek
@@ -132,7 +135,7 @@ void	ft_check_wrong_place(Word &checker, std::string player_input, std::string s
 		while (j < 5)
 		{
 			if (i != j
-					&& *(player_input.begin() + i) == *(seek.begin() + j)
+					&& *(checker.player_input.begin() + i) == *(checker.seek.begin() + j)
 					&& checker.reference[j] == 0 && checker.letters[i] == 0)
 			{
 				checker.reference[j] = 1;
@@ -144,7 +147,7 @@ void	ft_check_wrong_place(Word &checker, std::string player_input, std::string s
 	}
 }
 
-void	ft_check_correct_place(Word &checker, std::string player_input, std::string seek)
+void	ft_check_correct_place(Word &checker)
 {
 	int i;
 
@@ -153,10 +156,10 @@ void	ft_check_correct_place(Word &checker, std::string player_input, std::string
 	{
 		if (DEBUG)
 		{
-			std::cout << "player_letter =" << *(player_input.begin() + i) 
-					<< "seek_letter = " << *(seek.begin() + i) << std::endl;
+			std::cout << "player_letter =" << *(checker.player_input.begin() + i) 
+					<< "seek_letter = " << *(checker.seek.begin() + i) << std::endl;
 		}
-		if (*(player_input.begin() + i) ==  *(seek.begin() + i))
+		if (*(checker.player_input.begin() + i) ==  *(checker.seek.begin() + i))
 		{
 			if (checker.reference[i] == 0)
 			{
@@ -173,30 +176,54 @@ void	ft_check_correct_place(Word &checker, std::string player_input, std::string
 	}
 }
 
-int	ft_print_coloured_attempt(Word &checker, std::string &player_input)
+void	ft_print_menu()
+{
+
+}
+
+void	ft_print_bottom_menu()
+{
+
+}
+
+void	ft_print_victory_screen()
+{
+
+}
+
+int	ft_print_coloured_attempt(std::vector<Word> &words)
 {
 	int ret;
 	
 	ret = 0;
-	for (int i = 0; i < 5; i++)
+	system("clear");
+	ft_print_menu();
+	for (size_t j = 0; j < words.size(); j++)
 	{
-		if (checker.letters[i] == 2)
+		for (size_t i = 0; i < 5; i++)
 		{
-			std::cout << GREEN << *(player_input.begin() + i) << NOCOLOUR;
-			ret++;
+			if (words[j].letters[i] == 2)
+			{
+				std::cout << GREEN << *(words[j].player_input.begin() + i) << NOCOLOUR;
+				ret++;
+			}
+			else if (words[j].letters[i] == 1)
+				std::cout << ORANGE << *(words[j].player_input.begin() + i) << NOCOLOUR;
+			else
+				std::cout << *(words[j].player_input.begin() + i) << NOCOLOUR;
 		}
-		else if (checker.letters[i] == 1)
-			std::cout << ORANGE << *(player_input.begin() + i) << NOCOLOUR;
-		else
-			std::cout << *(player_input.begin() + i) << NOCOLOUR;
+		std::cout << std::endl;
+		if (ret == 5)
+		{
+			ft_print_victory_screen();
+			return (1);
+		}
 	}
-	std::cout << std::endl;
-	if (ret == 5)
-		return (1);
+	ft_print_bottom_menu();
 	return (0);
 }
 
-int	ft_ask_user(std::set<std::string> dico, std::string seek)
+int	ft_ask_user(std::vector<Word> &words, std::set<std::string> dico, std::string seek)
 {
 	std::string player_input;
 
@@ -205,10 +232,11 @@ int	ft_ask_user(std::set<std::string> dico, std::string seek)
 		if (ft_check_input(dico, player_input) == 1)
 			break;
 	}
-	Word checker(seek);
-	ft_check_correct_place(checker, player_input, seek);
-	ft_check_wrong_place(checker, player_input, seek);
-	return (ft_print_coloured_attempt(checker, player_input));
+	Word checker(seek, player_input);
+	ft_check_correct_place(checker);
+	ft_check_wrong_place(checker);
+	words.push_back(checker);
+	return (ft_print_coloured_attempt(words));
 }
 
 void	 ft_chose_random_word(std::set<std::string> dico, std::string &seek)
@@ -233,6 +261,7 @@ int	main(void)
 	std::ifstream dico_file;
 	std::set<std::string> dico;
 	std::string seek;
+	std::vector<Word> words;
 
 	i = 0;
 	dico_file.open("words.txt");
@@ -245,7 +274,7 @@ int	main(void)
 	ft_chose_random_word(dico, seek);
 	while (i < 6)
 	{
-		if (ft_ask_user(dico, seek) == 1)
+		if (ft_ask_user(words, dico, seek) == 1)
 			break ;
 	}
 	return (0);
