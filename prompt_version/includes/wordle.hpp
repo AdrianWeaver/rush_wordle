@@ -6,7 +6,7 @@
 /*   By: aweaver <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 08:56:42 by aweaver           #+#    #+#             */
-/*   Updated: 2022/05/14 18:05:46 by aweaver          ###   ########.fr       */
+/*   Updated: 2022/05/14 19:04:32 by aweaver          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #define GREEN "\33[1;32m"
 #define ORANGE "\33[1;33m"

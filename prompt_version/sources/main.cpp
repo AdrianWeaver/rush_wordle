@@ -6,7 +6,7 @@
 /*   By: aweaver <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 08:54:42 by aweaver           #+#    #+#             */
-/*   Updated: 2022/05/14 18:51:35 by aweaver          ###   ########.fr       */
+/*   Updated: 2022/05/14 19:26:02 by aweaver          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,30 +180,53 @@ void	ft_check_correct_place(Word &checker)
 	}
 }
 
-void	ft_print_menu()
+void	ft_print_menu(std::vector<Word> words, int cols)
 {
+	system("clear");
+	size_t attempts;
 
+	attempts = words.size();
+	for (int i = 0; i < ((cols - 20) / 16); i++)
+		std::cout << "\t";
+	std::cout << ORANGE << "Welcome dear friend!" << std::endl;
+	for (int i = 0; i < ((cols - 57) / 16); i++)
+		std::cout << "\t";
+	std::cout << "You have " << 6 - attempts << " attempts remaining to beat the game, Good luck!"
+			<< std::endl << std::endl << NOCOLOUR;
 }
 
-void	ft_print_bottom_menu()
+void	ft_print_first_menu(int cols)
 {
+	system("clear");
+	size_t attempts;
 
+	attempts = 0;
+	for (int i = 0; i < ((cols - 20) / 16); i++)
+		std::cout << "\t";
+	std::cout << ORANGE << "Welcome dear friend!" << std::endl;
+	for (int i = 0; i < ((cols - 57) / 16); i++)
+		std::cout << "\t";
+	std::cout << "You have " << 6 - attempts << " attempts remaining to beat the game, Good luck!"
+			<< std::endl << std::endl << NOCOLOUR; //57
 }
 
-void	ft_print_victory_screen()
+void	ft_print_victory_screen(int cols)
 {
-
+	for (int i = 0; i < ((cols - 29) / 16); i++)
+		std::cout << "\t";
+	std::cout << GREEN << "Well done chap(ess)! You won!" << NOCOLOUR << std::endl;
 }
 
-int	ft_print_coloured_attempt(std::vector<Word> &words)
+int	ft_print_coloured_attempt(std::vector<Word> &words, int cols)
 {
 	int ret;
 	
 	ret = 0;
-	system("clear");
-	ft_print_menu();
+	ft_print_menu(words, cols);
 	for (size_t j = 0; j < words.size(); j++)
 	{
+		for (int i = 0; i < ((cols - 5) / 16); i++)
+			std::cout << "\t";
 		for (size_t i = 0; i < 5; i++)
 		{
 			if (words[j].letters[i] == 2)
@@ -219,15 +242,14 @@ int	ft_print_coloured_attempt(std::vector<Word> &words)
 		std::cout << std::endl;
 		if (ret == 5)
 		{
-			ft_print_victory_screen();
+			ft_print_victory_screen(cols);
 			return (1);
 		}
 	}
-	ft_print_bottom_menu();
 	return (0);
 }
 
-int	ft_ask_user(std::vector<Word> &words, std::set<std::string> dico, std::string seek)
+int	ft_ask_user(std::vector<Word> &words, std::set<std::string> dico, std::string seek, int cols)
 {
 	std::string player_input;
 
@@ -240,7 +262,7 @@ int	ft_ask_user(std::vector<Word> &words, std::set<std::string> dico, std::strin
 	ft_check_correct_place(checker);
 	ft_check_wrong_place(checker);
 	words.push_back(checker);
-	return (ft_print_coloured_attempt(words));
+	return (ft_print_coloured_attempt(words, cols));
 }
 
 void	 ft_chose_random_word(std::set<std::string> dico, std::string &seek)
@@ -266,6 +288,11 @@ int	main(void)
 	std::set<std::string> dico;
 	std::string seek;
 	std::vector<Word> words;
+	struct winsize window;
+	int cols;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &window);
+	cols = window.ws_col;
+
 
 	i = 0;
 	dico_file.open("words.txt");
@@ -277,9 +304,10 @@ int	main(void)
 	ft_setify(dico_file, dico);
 	dico_file.close();
 	ft_chose_random_word(dico, seek);
+	ft_print_first_menu(cols);
 	while (i < 6)
 	{
-		if (ft_ask_user(words, dico, seek) == 1)
+		if (ft_ask_user(words, dico, seek, cols) == 1)
 			break ;
 	}
 	return (0);
